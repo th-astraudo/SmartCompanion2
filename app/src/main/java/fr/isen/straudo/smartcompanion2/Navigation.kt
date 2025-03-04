@@ -1,4 +1,4 @@
-package fr.isen.straudo.smartcompanion2.navigation
+package fr.isen.straudo.smartcompanion2
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
@@ -6,6 +6,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
@@ -21,6 +22,9 @@ import androidx.navigation.compose.rememberNavController
 import fr.isen.straudo.smartcompanion2.ui.screens.EventsScreen
 import fr.isen.straudo.smartcompanion2.ui.screens.HistoryScreen
 import fr.isen.straudo.smartcompanion2.ui.screens.MainScreen
+import fr.isen.straudo.smartcompanion2.data.Database2
+import androidx.compose.ui.platform.LocalContext
+
 
 sealed class Screen(val route: String, val title: String) {
     object Home : Screen("home", "Accueil")
@@ -29,14 +33,14 @@ sealed class Screen(val route: String, val title: String) {
 }
 
 @Composable
-fun MainApp() {
+fun MainApp(db: fr.isen.straudo.smartcompanion2.Database2) {
     val navController = rememberNavController()
 
     Scaffold(
         bottomBar = { BottomNavigationBar(navController) }
     ) { paddingValues ->
         Box(modifier = androidx.compose.ui.Modifier.padding(paddingValues)) {
-            NavigationGraph(navController)
+            NavigationGraph(navController, db)
         }
     }
 }
@@ -71,11 +75,15 @@ fun BottomNavigationBar(navController: NavHostController) {
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun NavigationGraph(navController: NavHostController) {
+fun NavigationGraph(navController: NavHostController, db: fr.isen.straudo.smartcompanion2.Database2) {
+    val context = LocalContext.current
+    val db = Database2.getDatabase(context = context)
+
     NavHost(navController, startDestination = Screen.Home.route) {
         composable(Screen.Home.route) { MainScreen() }
         composable(Screen.Events.route) { EventsScreen() }
-        composable(Screen.History.route) { HistoryScreen() }
+        composable(Screen.History.route) { HistoryScreen(db = db) }
     }
 }
