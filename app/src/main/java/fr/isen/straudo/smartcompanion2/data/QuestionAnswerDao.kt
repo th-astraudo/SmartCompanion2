@@ -13,11 +13,12 @@ interface QuestionAnswerDAO {
     suspend fun insertQuestionAnswer(questionAnswer: QuestionAnswer)
 
     @Query("SELECT * FROM question_answer_table ORDER BY timestamp DESC")
-    fun getAllQuestionAnswers(): kotlinx.coroutines.flow.Flow<List<QuestionAnswer>>
+    fun getAllQuestionAnswers(): Flow<List<QuestionAnswer>>
 
     @Delete
     suspend fun deleteQuestionAnswer(questionAnswer: QuestionAnswer)
 
     @Query("DELETE FROM question_answer_table")
     suspend fun deleteAll()
+
 }

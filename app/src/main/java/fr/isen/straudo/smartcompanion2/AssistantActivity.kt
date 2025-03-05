@@ -47,7 +47,8 @@ class AssistantActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             SmartCompanion2Theme {
-                AssistantScreen()  // Appeler votre AssistantScreen ici
+                val db = Database2.getDatabase(this)  // Récupère la base de données
+                AssistantScreen(db)
             }
         }
     }
@@ -55,7 +56,7 @@ class AssistantActivity : ComponentActivity() {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AssistantScreen() {
+fun AssistantScreen(db: Database2) {
     var question by remember { mutableStateOf("") }
     var response by remember { mutableStateOf("Posez votre question") }
     val context = LocalContext.current
@@ -109,6 +110,9 @@ fun AssistantScreen() {
                             coroutineScope.launch {
                                 response = "Analyse en cours..."
                                 response = GeminiAI.analyzeText(question)
+                                val dao = db.questionAnswerDao()
+                                dao.insert(QuestionAnswer(question = question, answer = response))
+
                             }
                         } else {
                             Toast.makeText(context, "Veuillez entrer une question", Toast.LENGTH_SHORT).show()
@@ -168,10 +172,10 @@ fun AssistantScreen() {
 //}
 
 // Preview
-@Preview(showBackground = true)
-@Composable
-fun AssistantScreenPreview() {
-    SmartCompanion2Theme {
-        AssistantScreen()
-    }
-}
+//@Preview(showBackground = true)
+//@Composable
+//fun AssistantScreenPreview() {
+ //   SmartCompanion2Theme {
+  //      AssistantScreen()
+ //   }
+//}

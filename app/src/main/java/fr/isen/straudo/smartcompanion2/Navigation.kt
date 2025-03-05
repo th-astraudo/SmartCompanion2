@@ -22,6 +22,7 @@ import androidx.navigation.compose.rememberNavController
 import fr.isen.straudo.smartcompanion2.ui.screens.EventsScreen
 import fr.isen.straudo.smartcompanion2.ui.screens.HistoryScreen
 import fr.isen.straudo.smartcompanion2.ui.screens.MainScreen
+import fr.isen.straudo.smartcompanion2.ui.screens.AdgendaScreen
 import fr.isen.straudo.smartcompanion2.data.Database2
 import androidx.compose.ui.platform.LocalContext
 
@@ -30,6 +31,7 @@ sealed class Screen(val route: String, val title: String) {
     object Home : Screen("home", "Accueil")
     object Events : Screen("events", "Événements")
     object History : Screen("history", "Historique")
+    object Agenda : Screen("agenda", "Agenda")
 }
 
 @Composable
@@ -47,7 +49,7 @@ fun MainApp(db: fr.isen.straudo.smartcompanion2.Database2) {
 
 @Composable
 fun BottomNavigationBar(navController: NavHostController) {
-    val screens = listOf(Screen.Home, Screen.Events, Screen.History)
+    val screens = listOf(Screen.Home, Screen.Events, Screen.History, Screen.Agenda)
 
     NavigationBar(containerColor = Color.White) {
         screens.forEach { screen ->
@@ -57,6 +59,7 @@ fun BottomNavigationBar(navController: NavHostController) {
                         Screen.Home -> Icon(Icons.Default.Home, contentDescription = screen.title)
                         Screen.Events -> Icon(Icons.Default.Search, contentDescription = screen.title)
                         Screen.History -> Icon(Icons.Default.ArrowBack, contentDescription = screen.title)
+                        Screen.Agenda -> Icon(Icons.Default.agenda, contentDescription = screen.title)
                     }
                 },
                 label = { Text(screen.title) },
@@ -85,5 +88,6 @@ fun NavigationGraph(navController: NavHostController, db: fr.isen.straudo.smartc
         composable(Screen.Home.route) { MainScreen() }
         composable(Screen.Events.route) { EventsScreen() }
         composable(Screen.History.route) { HistoryScreen(db = db) }
+        composable(Screen.Agenda.route) { AdgendaScreen() }
     }
 }

@@ -54,6 +54,7 @@ dependencies {
     implementation(libs.androidx.material3)
     implementation(libs.generativeai)
     implementation(libs.androidx.material3.android)
+    implementation(libs.androidx.work.runtime.ktx)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -67,5 +68,6 @@ dependencies {
     implementation(libs.room.runtime)
     implementation(libs.room.ktx)
     ksp(libs.room.compiler)
+    implementation(libs.datastore)
 
 }

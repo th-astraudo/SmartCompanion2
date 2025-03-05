@@ -1,14 +1,40 @@
 package fr.isen.straudo.smartcompanion2
 
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.content.Context
+import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
+import androidx.room.ColumnInfo
+import androidx.room.Dao
+import androidx.room.Database
+import androidx.room.Delete
+import androidx.room.Entity
+import androidx.room.Insert
+import androidx.room.PrimaryKey
+import androidx.room.Query
+import androidx.room.Room
+import androidx.room.RoomDatabase
+import androidx.work.OneTimeWorkRequestBuilder
+import androidx.work.WorkManager
+import androidx.work.workDataOf
+import fr.isen.straudo.smartcompanion2.data.NotificationWorker
 import fr.isen.straudo.smartcompanion2.ui.theme.SmartCompanion2Theme
-import androidx.room.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import retrofit2.http.GET
+import java.util.concurrent.TimeUnit
+import androidx.core.app.ActivityCompat
+import android.Manifest
+import android.app.Application
+import android.content.pm.PackageManager
+import fr.isen.straudo.smartcompanion2.MainActivity.Companion.REQUEST_CODE_PERMISSION
+import fr.isen.straudo.smartcompanion2.data.NotificationHelper
+
 
 // 1. Définition de l'entité Room
 @Entity(tableName = "question_answer_table")
@@ -63,9 +89,20 @@ abstract class Database2 : RoomDatabase() {
 // 4. MainActivity avec enregistrement des interactions dans Room
 class MainActivity : ComponentActivity() {
     private lateinit var database: Database2
+    companion object {
+        const val REQUEST_CODE_PERMISSION = 1001
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        NotificationHelper.createNotificationChannel(this)
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.POST_NOTIFICATIONS), REQUEST_CODE_PERMISSION)
+            }
+        }
 
         // Initialisation de la base de données
         database = Database2.getDatabase(this)
