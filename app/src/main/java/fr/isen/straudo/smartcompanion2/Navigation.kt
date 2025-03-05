@@ -4,7 +4,9 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -22,9 +24,10 @@ import androidx.navigation.compose.rememberNavController
 import fr.isen.straudo.smartcompanion2.ui.screens.EventsScreen
 import fr.isen.straudo.smartcompanion2.ui.screens.HistoryScreen
 import fr.isen.straudo.smartcompanion2.ui.screens.MainScreen
-import fr.isen.straudo.smartcompanion2.ui.screens.AdgendaScreen
 import fr.isen.straudo.smartcompanion2.data.Database2
 import androidx.compose.ui.platform.LocalContext
+import androidx.lifecycle.viewmodel.compose.viewModel
+import fr.isen.straudo.smartcompanion2.ui.screens.AgendaScreen
 
 
 sealed class Screen(val route: String, val title: String) {
@@ -59,7 +62,7 @@ fun BottomNavigationBar(navController: NavHostController) {
                         Screen.Home -> Icon(Icons.Default.Home, contentDescription = screen.title)
                         Screen.Events -> Icon(Icons.Default.Search, contentDescription = screen.title)
                         Screen.History -> Icon(Icons.Default.ArrowBack, contentDescription = screen.title)
-                        Screen.Agenda -> Icon(Icons.Default.agenda, contentDescription = screen.title)
+                        Screen.Agenda -> Icon(Icons.Default.DateRange, contentDescription = screen.title)
                     }
                 },
                 label = { Text(screen.title) },
@@ -88,6 +91,10 @@ fun NavigationGraph(navController: NavHostController, db: fr.isen.straudo.smartc
         composable(Screen.Home.route) { MainScreen() }
         composable(Screen.Events.route) { EventsScreen() }
         composable(Screen.History.route) { HistoryScreen(db = db) }
-        composable(Screen.Agenda.route) { AdgendaScreen() }
+        composable(Screen.Agenda.route) {
+            val viewModel: AgendaViewModel = viewModel()
+            AgendaScreen(viewModel)
+        }
+
     }
 }
