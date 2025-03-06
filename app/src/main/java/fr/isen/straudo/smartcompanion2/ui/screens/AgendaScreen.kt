@@ -1,8 +1,10 @@
 package fr.isen.straudo.smartcompanion2.ui.screens
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
@@ -17,6 +19,7 @@ import fr.isen.straudo.smartcompanion2.AgendaViewModel
 @Composable
 fun AgendaScreen(viewModel: AgendaViewModel) {
     val agendaItems by viewModel.agendaItems.collectAsStateWithLifecycle()
+    Log.d("AgendaScreen", "Nombre d'éléments dans l'agenda : ${agendaItems.size}")
 
     Column(
         modifier = Modifier
@@ -31,9 +34,8 @@ fun AgendaScreen(viewModel: AgendaViewModel) {
             modifier = Modifier.padding(bottom = 16.dp)
         )
 
-        LazyColumn {
-            items(agendaItems.size) { index ->
-                val item = agendaItems[index]
+        Column(modifier = Modifier.fillMaxSize()) {
+            agendaItems.forEach { item ->
                 Card(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -54,5 +56,6 @@ fun AgendaScreen(viewModel: AgendaViewModel) {
                 }
             }
         }
+
     }
 }

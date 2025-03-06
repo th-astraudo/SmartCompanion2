@@ -3,6 +3,7 @@ package fr.isen.straudo.smartcompanion2
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
@@ -42,6 +43,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import fr.isen.straudo.smartcompanion2.data.AgendaItem
 import fr.isen.straudo.smartcompanion2.data.NotificationHelper.scheduleNotification
 import fr.isen.straudo.smartcompanion2.data.PreferencesManager
 import fr.isen.straudo.smartcompanion2.ui.theme.SmartCompanion2Theme
@@ -51,13 +53,16 @@ import kotlinx.coroutines.launch
 class EventDetailActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         setContent {
             SmartCompanion2Theme {
                 // Récupérer l'objet Event à partir de l'intention
                 val event = intent.getSerializableExtra("event") as? Event
                 val viewModel: EventViewModel by viewModels()
+                val agendaViewModel: AgendaViewModel by viewModels()
+
                 if (event != null) {
-                    EventDetailScreen(event, viewModel)  // Passer l'Activity ici
+                    EventDetailScreen(event, viewModel, agendaViewModel)  // Passer l'Activity ici
                 } else {
                     Text("Aucun événement sélectionné")
                 }
@@ -67,12 +72,13 @@ class EventDetailActivity : ComponentActivity() {
 }
 
 @Composable
-fun EventDetailScreen(event: Event, viewModel: EventViewModel) {
+fun EventDetailScreen(event: Event, viewModel: EventViewModel, agendaViewModel: AgendaViewModel) {
     val context = LocalContext.current
     val isNotified by viewModel.isEventNotified(event.id).collectAsState(initial = false)
     val scope = rememberCoroutineScope()
     val preferencesManager = remember { PreferencesManager(context) }
     var isNotifiedLocal by remember { mutableStateOf(isNotified) }
+
 
     Box(
         modifier = Modifier
@@ -81,11 +87,11 @@ fun EventDetailScreen(event: Event, viewModel: EventViewModel) {
     ) {
         IconButton(
             onClick = {
-                // Retourner à l'écran d'accueil
-                context.startActivity(Intent(context, Event::class.java))
-                // Finir l'activité actuelle
-                (context as? Activity)?.finish()
-            },
+                        // Retourner à l'écran d'accueil
+                        context.startActivity(Intent(context, MainActivity::class.java))
+                        // Finir l'activité actuelle
+                        (context as? Activity)?.finish()
+                    },
             modifier = Modifier
                 .align(Alignment.TopStart)
                 .padding(16.dp)
@@ -96,7 +102,6 @@ fun EventDetailScreen(event: Event, viewModel: EventViewModel) {
                 tint = Color.Black
             )
         }
-
         // Contenu principal centré
         Column(
             modifier = Modifier
@@ -143,6 +148,19 @@ fun EventDetailScreen(event: Event, viewModel: EventViewModel) {
                     preferencesManager.setNotificationStatus(event.id, isNotifiedLocal)
                     if (isNotifiedLocal) {
                         scheduleNotification(event.id, event.title, context)
+
+                        val agendaItem = AgendaItem(
+                            id = event.id,
+                            title = event.title,
+                            description = event.description, // Ajouter description ici
+                            date = event.date,
+                            location = event.location,
+                            category = event.category
+                        )
+
+                        Log.d("EventDetail", "Ajout de l'événement à l'agenda : ${agendaItem.title}")
+                        agendaViewModel.addAgendaItem(agendaItem)
+
                     }
                 }
             },
