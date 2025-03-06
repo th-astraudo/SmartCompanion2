@@ -112,7 +112,7 @@ fun AssistantScreen(db: Database2) {
                                 response = GeminiAI.analyzeText(question)
                                 val dao = db.questionAnswerDao()
                                 dao.insert(QuestionAnswer(question = question, answer = response))
-
+                                question = ""
                             }
                         } else {
                             Toast.makeText(context, "Veuillez entrer une question", Toast.LENGTH_SHORT).show()

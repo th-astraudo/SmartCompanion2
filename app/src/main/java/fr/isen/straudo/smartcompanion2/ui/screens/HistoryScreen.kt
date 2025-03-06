@@ -29,7 +29,7 @@ fun HistoryScreen(db: Database2) {
             TopAppBar(
                 title = {
                     Text(
-                        text = "Historique des activités",
+                        text = "Historique des questions",
                         style = MaterialTheme.typography.headlineMedium,
                         color = Color.Black,
                         modifier = Modifier.fillMaxWidth(),
