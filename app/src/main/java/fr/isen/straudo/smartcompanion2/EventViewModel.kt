@@ -4,8 +4,8 @@ import android.app.Application
 import android.content.Context
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
-import fr.isen.straudo.smartcompanion2.data.PreferencesManager
 import fr.isen.straudo.smartcompanion2.data.NotificationHelper
+import fr.isen.straudo.smartcompanion2.data.PreferencesManager
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch

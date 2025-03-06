@@ -1,12 +1,12 @@
 package fr.isen.straudo.smartcompanion2
 
-import android.app.NotificationChannel
-import android.app.NotificationManager
-import android.content.Context
+import android.Manifest
+import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
 import androidx.room.ColumnInfo
@@ -19,21 +19,11 @@ import androidx.room.PrimaryKey
 import androidx.room.Query
 import androidx.room.Room
 import androidx.room.RoomDatabase
-import androidx.work.OneTimeWorkRequestBuilder
-import androidx.work.WorkManager
-import androidx.work.workDataOf
-import fr.isen.straudo.smartcompanion2.data.NotificationWorker
+import fr.isen.straudo.smartcompanion2.data.NotificationHelper
 import fr.isen.straudo.smartcompanion2.ui.theme.SmartCompanion2Theme
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import retrofit2.http.GET
-import java.util.concurrent.TimeUnit
-import androidx.core.app.ActivityCompat
-import android.Manifest
-import android.app.Application
-import android.content.pm.PackageManager
-import fr.isen.straudo.smartcompanion2.MainActivity.Companion.REQUEST_CODE_PERMISSION
-import fr.isen.straudo.smartcompanion2.data.NotificationHelper
 
 
 // 1. Définition de l'entité Room

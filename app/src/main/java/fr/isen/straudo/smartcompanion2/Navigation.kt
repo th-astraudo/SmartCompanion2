@@ -6,9 +6,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.Home
-import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material.icons.filled.Search
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
@@ -16,25 +14,25 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import fr.isen.straudo.smartcompanion2.data.Database2
+import fr.isen.straudo.smartcompanion2.ui.screens.AgendaScreen
 import fr.isen.straudo.smartcompanion2.ui.screens.EventsScreen
 import fr.isen.straudo.smartcompanion2.ui.screens.HistoryScreen
 import fr.isen.straudo.smartcompanion2.ui.screens.MainScreen
-import fr.isen.straudo.smartcompanion2.data.Database2
-import androidx.compose.ui.platform.LocalContext
-import androidx.lifecycle.viewmodel.compose.viewModel
-import fr.isen.straudo.smartcompanion2.ui.screens.AgendaScreen
 
 
 sealed class Screen(val route: String, val title: String) {
-    object Home : Screen("home", "Accueil")
-    object Events : Screen("events", "Événements")
-    object History : Screen("history", "Historique")
-    object Agenda : Screen("agenda", "Agenda")
+    data object Home : Screen("home", "Accueil")
+    data object Events : Screen("events", "Événements")
+    data object History : Screen("history", "Historique")
+    data object Agenda : Screen("agenda", "Agenda")
 }
 
 @Composable
@@ -81,7 +79,6 @@ fun BottomNavigationBar(navController: NavHostController) {
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun NavigationGraph(navController: NavHostController, db: fr.isen.straudo.smartcompanion2.Database2) {
     val context = LocalContext.current
