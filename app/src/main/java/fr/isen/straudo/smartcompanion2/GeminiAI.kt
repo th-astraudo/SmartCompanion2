@@ -10,7 +10,7 @@ object GeminiAI {
 
     private val model = GenerativeModel(
         modelName = "gemini-1.5-flash",
-        apiKey = apiKey// Ajuste directement la température ici si possible
+        apiKey = apiKey
     )
 
     suspend fun analyzeText(input: String): String {
