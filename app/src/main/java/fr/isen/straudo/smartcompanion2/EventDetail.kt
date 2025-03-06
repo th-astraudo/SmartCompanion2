@@ -61,78 +61,109 @@ fun EventDetailScreen(event: Event, viewModel: EventViewModel) {
     var isNotifiedLocal by remember { mutableStateOf(isNotified) }
 
     Box(
-        modifier = Modifier.fillMaxSize(),
-        contentAlignment = Alignment.TopCenter
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(16.dp),
     ) {
+        // Icône de retour
         IconButton(
             onClick = {
-                // Retourner à l'écran d'accueil
                 context.startActivity(Intent(context, Event::class.java))
-                // Finir l'activité actuelle
                 (context as? Activity)?.finish()
             },
-            modifier = Modifier
-                .align(Alignment.TopStart)
-                .padding(16.dp)
+            modifier = Modifier.align(Alignment.TopStart)
         ) {
             Icon(
                 imageVector = Icons.Filled.ArrowBack,
                 contentDescription = "Retour",
-                tint = Color.Black
+                tint = Color.Red,
+                modifier = Modifier.size(32.dp)
             )
         }
-        // Vérifier si l'événement est null
-        if (event != null) {
-            Box(
-                modifier = Modifier.fillMaxSize(),
-                contentAlignment = Alignment.Center
+
+        // Contenu principal centré
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(top = 56.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Card(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp),
+                colors = CardDefaults.cardColors(containerColor = Color.White),
+                elevation = CardDefaults.elevatedCardElevation(8.dp)
             ) {
-                Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                Column(
+                    modifier = Modifier.padding(16.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
                     Text(
                         text = event.title,
                         style = MaterialTheme.typography.headlineMedium,
-                        modifier = Modifier.padding(16.dp)
+                        color = Color.Red,
+                        modifier = Modifier.padding(bottom = 8.dp)
                     )
                     Text(
                         text = event.description,
-                        style = MaterialTheme.typography.bodyMedium,
-                        modifier = Modifier.padding(16.dp)
+                        style = MaterialTheme.typography.bodyLarge,
+                        modifier = Modifier.padding(bottom = 16.dp)
                     )
-                    Text(
-                        text = "Date: ${event.date}",
-                        style = MaterialTheme.typography.bodySmall,
-                        modifier = Modifier.padding(16.dp)
-                    )
-                    Text(
-                        text = "Lieu: ${event.location}",
-                        style = MaterialTheme.typography.bodySmall,
-                        modifier = Modifier.padding(16.dp)
-                    )
-                    Text(
-                        text = "Catégorie: ${event.category}",
-                        style = MaterialTheme.typography.bodySmall,
-                        modifier = Modifier.padding(16.dp)
-                    )
-                }
-                IconButton(onClick = {
-                    isNotifiedLocal = !isNotifiedLocal
-                    scope.launch {
-                        preferencesManager.setNotificationStatus(event.id, isNotifiedLocal) // Active la notification
-                        if (isNotifiedLocal) {
-                            scheduleNotification(event.id.toString(), event.title, context) // Programme la notification si activée
-                        }
-                    }
-                }) {
-                    Icon(imageVector = Icons.Default.Notifications,
-                        contentDescription = "Activer notifications",
-                        tint = if (isNotifiedLocal) Color.Green else Color.Gray )
+                    Divider(color = Color.Red, thickness = 1.dp)
+                    Spacer(modifier = Modifier.height(8.dp))
+                    InfoRow("📅 Date", event.date)
+                    InfoRow("📍 Lieu", event.location)
+                    InfoRow("🏷 Catégorie", event.category)
                 }
             }
-        } else {
-            Text("Aucun événement sélectionné")
+        }
+
+        // Bouton pour activer la notification
+        Button(
+            onClick = {
+                isNotifiedLocal = !isNotifiedLocal
+                scope.launch {
+                    preferencesManager.setNotificationStatus(event.id, isNotifiedLocal)
+                    if (isNotifiedLocal) {
+                        scheduleNotification(event.id.toString(), event.title, context)
+                    }
+                }
+            },
+            colors = ButtonDefaults.buttonColors(
+                containerColor = Color.Red,
+                contentColor = Color.White
+            ),
+            modifier = Modifier
+                .align(Alignment.BottomCenter)
+                .padding(16.dp)
+                .fillMaxWidth()
+        ) {
+            Icon(
+                imageVector = Icons.Default.Notifications,
+                contentDescription = "Activer notifications",
+                tint = Color.White,
+                modifier = Modifier.size(24.dp)
+            )
+            Spacer(modifier = Modifier.width(8.dp))
+            Text(if (isNotifiedLocal) "Notification activée" else "Activer la notification")
         }
     }
 }
+
+@Composable
+fun InfoRow(label: String, value: String) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 4.dp),
+        horizontalArrangement = Arrangement.SpaceBetween
+    ) {
+        Text(text = label, color = Color.Black, style = MaterialTheme.typography.bodyMedium)
+        Text(text = value, color = Color.DarkGray, style = MaterialTheme.typography.bodyMedium)
+    }
+}
+
 @Preview(showBackground = true)
 @Composable
 fun EventDetailScreenPreview() {

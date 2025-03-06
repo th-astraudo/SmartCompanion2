@@ -28,13 +28,7 @@ object NotificationHelper {
 
     fun scheduleNotification(eventId: String, eventTitle: String, context: Context) {
         val workRequest = OneTimeWorkRequestBuilder<NotificationWorker>()
-            .setInitialDelay(10, TimeUnit.SECONDS)
-            .setInputData(
-                workDataOf(
-                    "eventId" to eventId,
-                    "eventName" to eventTitle
-                )
-            )
+            .setInputData(workDataOf("eventTitle" to eventTitle))
             .build()
 
         WorkManager.getInstance(context).enqueue(workRequest)
